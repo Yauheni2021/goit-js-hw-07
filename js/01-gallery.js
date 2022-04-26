@@ -25,17 +25,36 @@ function createGalleryItems(items) {
 };
 
 function onGalleryClick(e) {
-    const isGalleryActive = e.target.classList.contains('gallery__link');
+    const isGalleryActive = e.target.classList.contains('gallery__image');
 
     if (!isGalleryActive) {
         return;
     }  
-    e.prevenDefault();
-
-    if (e.code === 'Escape') {
-        lightbox.close();  //разобраться в этом.
+    e.preventDefault();
+    
+    const onKeyboardCloseImg = e => {
+        if (e.code === 'Escape') {
+            instance.close();
+        }
     }
+    const instanceEl = e.target.dataset.source;
+    const instance = basicLightbox.create(`
+    <img
+    src="${instanceEl}"
+    alt="${e.target.alt}"/>`,
+        {
+            onShow: () => {
+                window.addEventListener('keydown', onKeyboardCloseImg)
+            },
+            onClose: () => {
+                window.removeEventListener('keydown', onKeyboardCloseImg)
+            },
+        
+        });
+instance.show()
 }
+
+
 
 
 
